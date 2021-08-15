@@ -7,9 +7,9 @@ init(convert=True)
 
 async def check(token):
     client = aiosonic.HTTPClient()
-    response = await client.post(f'https://discord.com/api/v9/users/@me/guild-events', headers={'Authorization': token})
+    response = await client.get(f'https://discord.com/api/v9/users/@me/guild-events', headers={'Authorization': token})
     await client.shutdown()
-    if "You need to verify your account in order to perform this action." in str(response.content) or "401: Unauthorized" in str(response.content):
+    if "You need to verify your account in order to perform this action." in str(await response.text()) or "401: Unauthorized" in str(await response.text()):
         return False
     else:
         return True
