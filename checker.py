@@ -5,7 +5,7 @@ from random import randint
 from colorama import init, Fore, Back, Style
 init(convert=True)
 
-async def variant2(token):
+async def check(token):
     client = aiosonic.HTTPClient()
     response = await client.post(f'https://discord.com/api/v9/users/@me/guild-events', headers={'Authorization': token})
     await client.shutdown()
@@ -19,7 +19,7 @@ async def main():
         checked = []
         with open('tokens.txt', 'r') as tokens:
             for token in tokens.read().split('\n'):
-                if len(token) > 15 and token not in checked and await variant2(token) == True:
+                if len(token) > 15 and token not in checked and await check(token) == True:
                     print(f'{Fore.GREEN}[Valid]{Fore.WHITE} {token} ')
                     print(Style.RESET_ALL, end='')
                     checked.append(token)
